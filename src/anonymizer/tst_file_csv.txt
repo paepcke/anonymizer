@@ -1,0 +1,6 @@
+First 94025 line,94025,last column
+First line,A zip+4 is 94025-3412,last column
+650-327-7398,A US phone number is 650-327-7398,last 650-327-7398 column
+First line,A German phone number is 049-721-1234567,last column
+First line,An Indian phone number is 011-91-1234567890,last column
+First line,An email address foo@gmail.com,last john.doe@stanford.edu

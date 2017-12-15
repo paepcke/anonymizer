@@ -1,0 +1,7 @@
+First line
+A zipcode is 94025
+A zip+4 is 94025-3412
+A US phone number is 650-327-7398
+A German phone number is 049-721-1234567
+An Indian phone number is 011-91-1234567890
+An email address foo@gmail.com

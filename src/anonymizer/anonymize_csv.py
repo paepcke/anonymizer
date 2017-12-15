@@ -72,5 +72,5 @@ if __name__ == '__main__':
     
     args = parser.parse_args();
 
-    scrubber = CSVScrubber(input_file=args.infile, output_file=args.outfile, ignore_cols=args.ignore_cols)
+    scrubber = CSVScrubber(input_file=args.infile, output_file=args.outfile, ignore_cols=args.ignorecol)
     scrubber.anonymize()

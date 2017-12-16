@@ -40,14 +40,29 @@ class CSVScrubber(TextScrubber):
         so that unittests can create a CSVScrubber instance without
         doing the actual work. Instead, unittests call individual methods.
         '''
-
-        with open(self.infile_name, 'rU') as infile:
-            with open(self.outfile_name, 'w') as outfile:
-                reader = csv.reader(infile)
-                writer = csv.writer(outfile)
-                for row in reader:
-                    row = [self.anonymize_text(t) if i not in self.ignore_cols else t for i, t in enumerate(row)]
-                    writer.writerow(row)
+        try:
+            if self.infile_name is None:
+                infile = sys.stdin
+            else:
+                infile =  open(self.infile_name, 'r')
+                
+            if self.outfile_name is None:
+                outfile = sys.stdout
+            else:
+                outfile = open(self.outfile_name, 'w')
+    
+            reader = csv.reader(infile)
+            writer = csv.writer(outfile)
+            for row in reader:
+                row = [self.anonymize_text(t) if i not in self.ignore_cols else t for i, t in enumerate(row)]
+                writer.writerow(row)
+        finally:
+            if self.infile_name is not None:
+                infile.close()
+            if self.outfile_name is not None:
+                outfile.close()
+            else:
+                outfile.flush()
 
 if __name__ == '__main__':
 
@@ -72,5 +87,13 @@ if __name__ == '__main__':
     
     args = parser.parse_args();
 
-    scrubber = CSVScrubber(input_file=args.infile, output_file=args.outfile, ignore_cols=args.ignorecol)
+    # Turn the skip-columns array of strings
+    # into an array of ints:
+    try:
+        ignorecol = [int(col_num) for col_num in args.ignorecol]
+    except ValueError:
+        print("Colums to ignore must integer(s), but were: %s" % str(args.ignorecol))
+        sys.exit()
+
+    scrubber = CSVScrubber(input_file=args.infile, output_file=args.outfile, ignore_cols=ignorecol)
     scrubber.anonymize()

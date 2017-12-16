@@ -50,15 +50,17 @@ class TextScrubber(object):
             else:
                 outfile = open(self.outfile_name, 'w')
                 
-            with open(self.infile_name, 'rU') as infile:
-                for row in infile:
-                    row = self.anonymize_text(row.rstrip())
-                    outfile.write(row + '\n')
+            for row in infile:
+                row = self.anonymize_text(row.rstrip())
+                outfile.write(row + '\n')
         finally:
             if self.infile_name is not None:
                 infile.close()
             if self.outfile_name is not None:
                 outfile.close()
+            else:
+                outfile.flush()
+                
 
     def prune_numbers(self, text):
         '''

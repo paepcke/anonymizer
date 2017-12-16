@@ -3,11 +3,12 @@ Created on Dec 14, 2017
 
 @author: paepcke
 '''
+import sys
 from tempfile import NamedTemporaryFile
 import unittest
 
-from anonymize_txt import TextScrubber
 from anonymize_csv import CSVScrubber
+from anonymize_txt import TextScrubber
 
 
 TEST_ALL = True
@@ -76,6 +77,30 @@ class TestAnonymization(unittest.TestCase):
             #print(redacted_row.rstrip())
             self.assertEqual(redacted_row.rstrip(), truth.next())
 
+    #-----------------------------
+    # test_in_piping 
+    #-----------------------    
+
+    @unittest.skipIf(not TEST_ALL, "Temporarily disabled")
+    def test_in_piping(self):
+        # Test reading from STDIN:
+        try:
+            saved_stdin = sys.stdin 
+                    
+            sys.stdin = open(self.tst_csv_infile, 'r')
+            
+            # Not specifying input file will have anonymizer read
+            # from our our fake stdin:
+            anonymizer = CSVScrubber(output_file=self.tst_outfile_fd.name)
+            anonymizer.anonymize()
+            
+            truth = iter(self.redacted_lines_all_columns_csv)
+            for redacted_row in self.tst_outfile_fd:
+                #print(redacted_row.rstrip())
+                self.assertEqual(redacted_row.rstrip(), truth.next())
+        finally:
+            sys.stdin = saved_stdin
+        
     #--------------------------- Utilities ---------------------
     
     #-----------------------------

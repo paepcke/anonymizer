@@ -14,6 +14,7 @@ import argparse
 import csv
 import os
 import sys
+import re
 
 from anonymize_txt import TextScrubber
 
@@ -44,21 +45,22 @@ class CSVScrubber(TextScrubber):
             if self.infile_name is None:
                 infile = sys.stdin
             else:
-                infile =  open(self.infile_name, 'r')
+                infile_fd   = open(self.infile_name, 'r')
+                filtered    = (re.sub(TextScrubber.CR_LF_PATTERN,' ',row) for row in infile_fd)
                 
             if self.outfile_name is None:
                 outfile = sys.stdout
             else:
                 outfile = open(self.outfile_name, 'w')
     
-            reader = csv.reader(infile)
+            reader = csv.reader(filtered)
             writer = csv.writer(outfile)
             for row in reader:
                 row = [self.anonymize_text(t) if i not in self.ignore_cols else t for i, t in enumerate(row)]
                 writer.writerow(row)
         finally:
             if self.infile_name is not None:
-                infile.close()
+                infile_fd.close()
             if self.outfile_name is not None:
                 outfile.close()
             else:

@@ -24,6 +24,8 @@ class TextScrubber(object):
     
     '''
 
+    CR_LF_PATTERN = re.compile(r'[\n\r]')
+
     def __init__(self, infile=None, outfile=None):
         '''
         Constructor
@@ -135,6 +137,14 @@ class TextScrubber(object):
         '''
         return text
 
+    def trimCrLf(self, text):
+        '''
+        Replace every CR or LF (\n or \r) in a
+        row with a space:
+        '''
+        text = re.sub(TextScrubber.CR_LF_PATTERN, ' ', text)
+        return text
+
     def anonymize_text(self, text):
         '''
         Anonymize text. The following is done:
@@ -153,6 +163,8 @@ class TextScrubber(object):
         # some of the names people give are very common English words. 
         # (Implementation removes too much)
         text = self.trimnames(text)
+
+        # text = self.trimCrLf(text)
 
         return text
 

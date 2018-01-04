@@ -44,6 +44,7 @@ class CSVScrubber(TextScrubber):
         try:
             if self.infile_name is None:
                 infile = sys.stdin
+                filtered    = (re.sub(TextScrubber.CR_LF_PATTERN,' ',row) for row in sys.stdin)
             else:
                 infile_fd   = open(self.infile_name, 'r')
                 filtered    = (re.sub(TextScrubber.CR_LF_PATTERN,' ',row) for row in infile_fd)
